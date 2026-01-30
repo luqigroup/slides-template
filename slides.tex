@@ -1,15 +1,18 @@
-\documentclass[aspectratio=169, 12pt]{beamer}
+\documentclass[aspectratio=169, 14pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage{utopia}
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{float}
-\usepackage{subfig}
+% \usepackage{subfig}
 \usepackage[ruled,vlined]{algorithm2e}
 \usepackage[export]{adjustbox}
 \usefonttheme[onlymath]{serif}
 \usepackage{amsmath, mathtools, bm}
-\usepackage[backend=bibtex, style=verbose, sorting=ynt, dashed=false, maxnames=15]{biblatex}
+\usepackage[backend=bibtex, style=ieee, sorting=ynt, maxnames=3]{biblatex}
+\setlength{\footnotesep}{0.4\baselineskip} % Adjust as needed
+
+
 \usepackage{tikz}
 \bibliography{slides-bib}
 \usepackage{multirow}
@@ -34,7 +37,8 @@
 \makeatletter
 \newcommand\notsotiny{\@setfontsize\notsotiny{6.5}{7.1}}
 \newcommand\supertiny{\@setfontsize\supertiny{3.6}{3.6}}
-\newcommand\smallerthansmall{\@setfontsize\notsotiny{7.1}{7.5}}
+\newcommand\smallerthansmall{\@setfontsize\notsotiny{8.5}{7.5}}
+\newcommand\medium{\@setfontsize\medium{14}{14.8}}
 \makeatother
 
 % Colors
@@ -47,19 +51,24 @@
 \definecolor{LightGray}{RGB}{192, 192, 192}
 \definecolor{Orange}{RGB}{255, 146, 3}
 \definecolor{SLIMorange}{RGB}{222, 160, 84}
-\definecolor{DarkRed}{RGB}{150, 50, 57}
+\definecolor{DarkRed}{RGB}{168,20,20}
 \definecolor{MyBlue}{RGB}{0, 142, 196}
 \definecolor{MyGreen}{RGB}{16, 167, 120}
 \definecolor{DarkGreen}{RGB}{39, 122, 43}
 \definecolor{mydarkblue}{rgb}{0,0.08,0.45}
+\definecolor{GrayRed}{RGB}{145, 97, 101}
+\definecolor{LightGreen}{RGB}{84, 240, 113}
+\definecolor{LightBlue}{RGB}{115, 176, 228}
+\definecolor{Gold}{RGB}{255, 202, 6}
+\definecolor{Navy}{RGB}{0, 54, 96}
 
 % Beamer template settings
-\setbeamertemplate{caption}[numbered]
-\setbeamertemplate{footline}[frame number]{}
+% \setbeamertemplate{caption}[numbered]
+% \setbeamertemplate{footline}[frame number]{}
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{title page}[default][left,colsep=-4bp,rounded=true,shadow=\beamer@themerounded@shadow]
-\setbeamertemplate{itemize items}{\scriptsize $\blacktriangleright$}
-\setbeamertemplate{itemize/enumerate body begin}{\small}
+\setbeamertemplate{itemize items}{\normalsize \color{GrayText} $\blacktriangleright$}
+\setbeamertemplate{itemize/enumerate body begin}{\normalsize}
 \setbeamertemplate{itemize/enumerate subbody begin}{}
 \setbeamertemplate{bibliography item}{}
 \setbeamertemplate{frametitle}{%
@@ -77,24 +86,29 @@
 \setbeamercolor{normal text}{fg=GrayText}
 \setbeamerfont{institute}{size=\small}
 \setbeamerfont{date}{size=\small}
-\setbeamerfont{footnote}{size=\tiny}
+\setbeamerfont{footnote}{size=\scriptsize}
 \setbeamercolor{background canvas}{bg=}
 \setbeamercolor{page number in head/foot}{fg=GrayText}
+
 
 % Custom commands
 \newcommand{\KL}{\mathbb{KL}}
 \newcommand{\B}{\mathbf}
 \newcommand{\Bs}{\boldsymbol}
 \newcommand{\bn}{\boldsymbol{\epsilon}}
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{\mathop{\rm arg\,max}}
+\DeclareMathOperator*{\argmin}{\mathop{\rm arg\,min}}
 \newcommand*\mystrut[1]{\vrule width0pt height0pt depth#1\relax}
+\newcommand*\myoverstrut[1]{\vrule width0pt height#1 depth0pt\relax}
+
 
 % Captions setup
 \captionsetup[subfloat]{margin=1em}
-\captionsetup[justification=centering, skip=2pt]{}
-\captionsetup[subfigure]{labelformat=empty}
-\setlength{\abovecaptionskip}{20pt plus 3pt minus 2pt}
+\captionsetup[justification=centering, skip=-10pt]{}
+% \usepackage{graphicx} % for including images
+\usepackage{subcaption} % for creating subplots
+
+\setlength{\abovecaptionskip}{10pt plus 3pt minus 2pt}
 
 % Avoid reference numbers
 \makeatletter
@@ -105,63 +119,184 @@
 % Document settings
 \setbeamersize{text margin left=7.5mm,text margin right=7.5mm}
 
-%------------------------------------------------------------
+
+\makeatletter
+\setbeamertemplate{frametitle}{%
+    \vspace{1.5em}  % Adjust this value for the space above the title
+    \insertframetitle
+    % \vspace{-1.5em} % Adjust this value for the space below the title
+}
+\makeatother
+
+% Tikz and plots
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{positioning, shapes.geometric}
+
+% shorter legend lines
+\pgfplotsset{
+    /pgfplots/legend image code/.code={%
+        \draw[mark repeat=2,mark phase=2,#1]
+            plot coordinates {
+                (0cm,0cm)
+                (0.19cm,0cm)
+                (0.38cm,0cm)%
+            };
+    },
+}
+
+% Based on pgfplots Dark2
+\definecolor{colorA}{HTML}{1B9E77}
+\definecolor{colorB}{HTML}{D95F02}
+\definecolor{colorC}{HTML}{7570B3}
+\definecolor{colorD}{HTML}{E7298A}
+\definecolor{colorE}{HTML}{66A61E}
+\definecolor{colorF}{HTML}{E6AB02}
+\definecolor{colorG}{HTML}{A6761D}
+\definecolor{colorH}{HTML}{666666}
+
+\definecolor{fuchsia}{rgb}{1.0, 0.0, 1.0}
+
+
+\usepackage{listings}
+\usepackage{wrapfig}
+% Define colors based on the provided theme
+\definecolor{inactiveBackground}{HTML}{e6e9ef}
+\definecolor{ansiBrightBlack}{HTML}{8c8fa1}
+\definecolor{ansiBrightCyan}{HTML}{04a5e5}
+\definecolor{ansiGreen}{HTML}{40a02b}
+\definecolor{ansiMagenta}{HTML}{ea76cb}
+\definecolor{terminalForeground}{HTML}{4c4f69}
+% Define style for Python code highlighting
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{inactiveBackground},
+    commentstyle=\color{ansiGreen},
+    keywordstyle=\color{ansiMagenta},
+    numberstyle=\tiny\color{ansiBrightBlack},
+    stringstyle=\color{ansiBrightCyan},
+    basicstyle=\ttfamily\scriptsize\color{terminalForeground},
+    breakatwhitespace=false,
+    breaklines=false,
+    captionpos=b,
+    keepspaces=true,
+    numbers=none,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4
+}
+\lstset{style=mystyle}
+
+
+\newcommand{\citeyearauthor}[1]{\smallerthansmall\color{GrayText}\citeauthor*{#1},\,\citeyear{#1}}
+
+
+% =============================================================================
+% TITLE PAGE CONFIGURATION
+% =============================================================================
+
+% Uncomment and modify for title page image
+% \titlegraphic{
+%   \begin{tikzpicture}[overlay, remember picture]
+%     \node[anchor=south east, inner sep=6pt, xshift=0.2cm] at (current page.south east) {
+%       \includegraphics[width=6cm]{figs/your-image.png}
+%     };
+%   \end{tikzpicture}
+% }
+
+\title[]{\hspace*{-0.3cm}\Large Your Presentation Title}
+
+\subtitle[]{\hspace*{-0.3cm}\large Your Subtitle Here}
+
+\author[]{\hspace*{-0.3cm}\normalsize \textbf{Your Name} \\
+          \hspace*{-0.3cm}\normalsize Your Institution}
+
+
+\date{}
+
 \begin{document}
 
-\title[]
-{Hierarchical clustering}
+% =============================================================================
+% TITLE SLIDE
+% =============================================================================
+{
+\frame[plain]{
+    \vspace{-0.8cm}
+    \titlepage
+}
+}
 
-\subtitle{\large A general lattice theory perspective}
-
-\author[shortname]{\normalsize \\
-    Ali Siahkoohi\inst{1}, Joonas Ilmavirta\inst{2}, and Maarten V. de Hoop\inst{1}}
-\institute[shortinst]{\footnotesize
-    \inst{1}Department of Computational Applied Mathematics and Operations Research, Rice University \\[0.2em]
-    \inst{2} Department of Mathematics and Statistics, University of Jyväskylä}
-\date{\footnotesize\today}
-
-
-\frame[plain]{\titlepage}
-
-
-% ---------------------------------------------------------
+% =============================================================================
+% OUTLINE SLIDE
+% =============================================================================
 \begin{frame}
 
-    \bigskip
-    \bigskip
+    \frametitle{outline}
 
-    \centerline{\large\textbf{``Flat'' clustering}}
+    \vspace{-1em}
 
-    \bigskip
-    \bigskip
-
-    \centerline{partitioning of data points into a fixed number of sets}
+    \begin{itemize}
+        \setlength{\itemindent}{-1em}
+        \setlength\itemsep{1.75em}
+        \item first topic --- \textbf{key point}
+        \item second topic --- \textbf{key point}
+        \item third topic --- \textbf{key point}
+        \item \textbf{conclusion and future work}
+    \end{itemize}
 
 \end{frame}
 
 
-% ---------------------------------------------------------
+% =============================================================================
+% BASIC CONTENT SLIDE WITH ITEMS
+% =============================================================================
 \begin{frame}
 
-    \bigskip
-    \bigskip
+    \frametitle{slide title}
 
-    \centerline{\large\textbf{The impossibility theorem of flat clustering}}
+    \vspace{-1em}
 
-    \bigskip
-    \bigskip
-
-    \centerline{no clustering function simultaneously satisfies}
-
-    \medskip
-
-    \centerline{scale invariance, richness, and consistency\footfullcite{Kleinberg_2002}}
+    \begin{itemize}
+        \setlength{\itemindent}{-1em}
+        \setlength\itemsep{1.5em}
+        \item first point
+        \item second point
+        \item third point
+    \end{itemize}
 
 \end{frame}
 
 
+% =============================================================================
+% CENTERED TEXT SLIDE (no title)
+% =============================================================================
+{
+\begin{frame}
 
-% ---------------------------------------------------------
+    \centerline{\large first line of centered text}
+
+    \bigskip
+    \bigskip
+    \bigskip
+
+    \centerline{\large \textbf{emphasized line}}
+
+    \bigskip
+    \bigskip
+    \bigskip
+
+    \centerline{\large \color{DarkGreen} highlighted conclusion}
+
+\end{frame}
+}
+
+
+% =============================================================================
+% SLIDE WITH FIGURE AND CITATION (from example/)
+% =============================================================================
 \begin{frame}
 
     \bigskip
@@ -172,199 +307,213 @@
     \bigskip
     \bigskip
 
-    \centerline{family of partitionings of data points with varying degrees of ``granularity''}
+    \centerline{partitionings of data points with varying degrees of ``granularity''}
 
-    \footfullcite{JMLR:v18:15-376,}
+    \footfullcite{JMLR:v18:15-376}
 
     \begin{figure}
         \centering
-        \includegraphics[width=0.6\textwidth, center]{figures/flat_vs_hc.png}
+        \includegraphics[width=0.6\textwidth, center]{figs/flat_vs_hc.png}
     \end{figure}
 
 \end{frame}
 
-
-% ---------------------------------------------------------
+% =============================================================================
+% SLIDE WITH TIKZ DIAGRAM (two boxes with arrow)
+% =============================================================================
 \begin{frame}
 
+    \centering
 
-    \vspace*{-.55cm}
+    \begin{figure}[h!]
+        \centering
+        \vspace{1em}
+        \begin{tikzpicture}
 
-    \centerline{\large\textbf{Hierarchical clustering}}
+        % Define parameters for easy fine-tuning
+        \def\boxwidth{4cm}          % Width of the boxes
+        \def\boxheight{1.5cm}       % Height of the boxes
+        \def\boxsep{3cm}            % Horizontal distance between boxes
+        \def\arrowthickness{0.85mm} % Thickness of arrows
+        \def\boxcolor{Gold!20}      % Fill color of the boxes
+        \def\textcolor{black}       % Text color in the boxes
 
-    \bigskip
-    \bigskip
+        % Box 1
+        \node[draw=black, fill=\boxcolor, minimum width=\boxwidth,
+              minimum height=\boxheight, align=center, text=\textcolor]
+              (box1) at (0, 0)
+              {\color{GrayText} \textbf{left box}};
 
-    \centerline{relaxation of flat clustering: not restricted to a fixed number of clusters}
+        % Box 2
+        \node[draw=black, fill=\boxcolor, minimum width=\boxwidth,
+              minimum height=\boxheight, align=center, text=\textcolor]
+              (box2) at (\boxsep + 4.75cm, 0)
+              {\color{GrayText} \textbf{right box}};
 
-    \bigskip
+        % Arrow connecting the two boxes
+        \draw[->, line width=\arrowthickness, draw=GrayText!60] (box1) -- (box2);
 
-    \centerline{no obstruction to existence (unlike flat clustering) \footfullcite{CarlssonEtAl_2010} \footfullcite{MoseleyEtAl_2017} \footfullcite{LaenenEtAl_2023}}
+    \end{tikzpicture}
+    \vspace{0.76em}
+    \caption*{\normalsize diagram caption}
+\end{figure}
 
 \end{frame}
 
 
-% ---------------------------------------------------------
+% =============================================================================
+% SLIDE WITH FLOW DIAGRAM (input -> function -> output)
+% =============================================================================
 \begin{frame}
 
-    \frametitle{Current hierarchical clustering algorithms}
+    \frametitle{flow diagram}
 
+    \centering
+
+    \begin{figure}[h!]
+        \centering
+        \vspace{1em}
+        \begin{tikzpicture}
+
+            % Define parameters
+            \def\boxwidth{2.5cm}
+            \def\boxheight{1.5cm}
+            \def\boxsep{1.5cm}
+            \def\arrowthickness{0.85mm}
+            \def\boxcolor{Gold!20}
+            \def\textcolor{black}
+
+            % Input
+            \node[align=center, text=\textcolor]
+                  (input)
+                  {\large {\color{GrayText} input}};
+
+            % Function Box
+            \node[draw=black, fill=\boxcolor, minimum width=\boxwidth,
+                  minimum height=\boxheight, align=center, text=\textcolor,
+                  right=\boxsep of input]
+                  (function)
+                  {\color{GrayText}\large$f_{\Bs{\theta}}$};
+
+            % Output
+            \node[text=\textcolor,
+                  right=\boxsep of function]
+                  (output)
+                  {\large {\color{GrayText} output}};
+
+            % Arrows
+            \draw[->, line width=\arrowthickness, draw=GrayText!60] (input) -- (function);
+            \draw[->, line width=\arrowthickness, draw=GrayText!60] (function) -- (output);
+
+        \end{tikzpicture}
+\end{figure}
+
+\end{frame}
+
+
+% =============================================================================
+% SLIDE WITH TWO COLUMNS
+% =============================================================================
+\begin{frame}
+
+    \frametitle{two column layout}
+
+    \begin{columns}[T]
+
+        \begin{column}{0.48\textwidth}
+            \textbf{Left column}
+            \begin{itemize}
+                \item point one
+                \item point two
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{Right column}
+            \begin{itemize}
+                \item point one
+                \item point two
+            \end{itemize}
+        \end{column}
+
+    \end{columns}
+
+\end{frame}
+
+
+% =============================================================================
+% SLIDE WITH MATH
+% =============================================================================
+\begin{frame}
+
+    \frametitle{mathematical content}
+
+    \vspace{-0.5em}
+
+    Given a dataset $\mathcal{D} = \{(\B{x}_i, \B{y}_i)\}_{i=1}^{N}$, we aim to:
+
+    \vspace{1em}
+
+    \begin{equation*}
+        \min_{\Bs{\theta}} \frac{1}{N} \sum_{i=1}^{N} \mathcal{L}(f_{\Bs{\theta}}(\B{x}_i), \B{y}_i)
+    \end{equation*}
+
+    \vspace{1em}
+
+    where:
     \begin{itemize}
         \setlength{\itemindent}{-1em}
         \setlength\itemsep{0.5em}
-        \item[] {\color{DarkGreen} yield expected outcomes when applied to data with clear hierarchical structure}
-        \item[] {\color{DarkRed} little is known theoretically when dealing with data with ambiguous discrete structure}
-        \item[]  {\color{DarkRed} impose unnecessary constraints on solution, e.g.}
-            \begin{itemize}
-                \setlength{\itemindent}{-1.5em}
-                \setlength\itemsep{0.5em}
-                \item[\scriptsize\color{DarkRed}$\blacktriangleright$] {\color{DarkRed} tree (hyperbolic) metric embedding}
-                \item[\scriptsize\color{DarkRed}$\blacktriangleright$] {\color{DarkRed} binary tree structure, e.g., single/average/complete linkage}
-                \item[\scriptsize\color{DarkRed}$\blacktriangleright$] {\color{DarkRed} ultrametricity}
-            \end{itemize}
+        \item $f_{\Bs{\theta}}$ is the model with parameters $\Bs{\theta}$
+        \item $\mathcal{L}$ is the loss function
     \end{itemize}
 
-
-    \footfullcite{10.1145/3534678.3539378} \footfullcite{NEURIPS2019_b865367f} \footfullcite{NEURIPS2020_093f65e0}
-
-
-\end{frame}
-
-% ---------------------------------------------------------
-\begin{frame}
-
-    \bigskip
-    \bigskip
-
-    \centerline{\large\textbf{A lattice-theoretic framework for hierarchical clustering}}
-
-    \bigskip
-    \bigskip
-
-    \centerline{drawing inspiration from the work in cognitive psychology}
-
-    \medskip
-
-    \centerline{stripping away unnecessary constraints and exploring the full solution space}
-
-    \footfullcite{ReitmanRueter_1980} \footfullcite{Hirtle_1982}
-
 \end{frame}
 
 
-% ---------------------------------------------------------
+% =============================================================================
+% SLIDE WITH CODE LISTING
+% =============================================================================
+\begin{frame}[fragile]
+
+    \frametitle{code example}
+
+    \vspace{-0.5em}
+
+\begin{lstlisting}[language=Python]
+import torch
+import torch.nn as nn
+
+class Model(nn.Module):
+    def __init__(self, input_dim, output_dim):
+        super().__init__()
+        self.linear = nn.Linear(input_dim, output_dim)
+
+    def forward(self, x):
+        return self.linear(x)
+\end{lstlisting}
+
+\end{frame}
+
+
+% =============================================================================
+% CONTRIBUTIONS SLIDE
+% =============================================================================
 \begin{frame}
 
-    \frametitle{Outline}
+    \frametitle{contributions}
+
+    \vspace{-1em}
 
     \begin{itemize}
         \setlength{\itemindent}{-1em}
-        \setlength\itemsep{0.5em}
-        \item[] hierarchical clustering in the context of lattice theory
-            \begin{itemize}
-                \setlength{\itemindent}{-1.5em}
-                \setlength\itemsep{0.3em}
-                \item lattice theory
-                \item the lattice of partition space
-                \item hierarchical clustering as chain inference
-            \end{itemize}
-        \item[] information-theoretical energy landscape over the lattice of partitions
-            \begin{itemize}
-                \setlength{\itemindent}{-1.5em}
-                \setlength\itemsep{0.3em}
-                \item minimum description length generative models
-                \item optimal chain inference
-            \end{itemize}
-        \item[] computational heuristics
-        \item[] remaining challenges
+        \setlength\itemsep{1.5em}
+        \item first contribution
+        \item second contribution
+        \item third contribution
     \end{itemize}
 
-
 \end{frame}
 
-% ---------------------------------------------------------
-\begin{frame}
-
-    \vspace*{0.2cm}
-
-    \begin{definition}{}
-
-        \bigskip
-
-        a \textbf{lattice} $L$ is a set $X$ together with a relation $\leq$ that satisfies the following properties:
-        \begin{enumerate}
-            \item $\leq$ is a partial ordering, i.e., for all $x, y, z \in X$:
-                  \begin{itemize}
-                      \item $x \leq x$
-                      \item $x \leq y$ and $y \leq x \Rightarrow x = y$
-                      \item $x \leq y$ and $y \leq z \Rightarrow x \leq z$
-                  \end{itemize}
-            \item every pair of elements $x, y \in X$ has a unique least upper bound, i.e., join, denoted by $x \cup y$
-            \item every pair of elements $x, y \in X$ has a unique greatest lower bound, i.e., meet, denoted by $x \cap y$
-        \end{enumerate}
-
-    \end{definition}
-
-    \footfullcite{Birkhoff_1979}
-
-\end{frame}
-
-% ---------------------------------------------------------
-\begin{frame}
-
-    \begin{definition}
-
-        \bigskip
-
-
-        a \textbf{partition} of set $X$ is a collection $\mathcal{P}$ of non-empty subsets of $X$ such that:
-
-        \medskip
-
-        \begin{itemize}
-            \item every element of $X$ belongs to exactly one subset in $\mathcal{P}$.
-            \item the union of all subsets in $\mathcal{P}$ equals $X$, i.e., $\bigcup_{A \in \mathcal{P}} A = X$.
-            \item any two distinct subsets in $\mathcal{P}$ are disjoint, i.e., $\forall \, A, B \in \mathcal{P}$, if $A \neq B$, then $A \cap B = \emptyset$.
-        \end{itemize}
-    \end{definition}
-
-\end{frame}
-
-% ---------------------------------------------------------
-\begin{frame}
-
-    \begin{tcolorbox}[colback=white,colframe=black,title=Definition]
-        a \textbf{partition} of set $X$ is a collection $\mathcal{P}$ of non-empty subsets of $X$ such that:
-
-        \medskip
-
-        \begin{itemize}
-            \item every element of $X$ belongs to exactly one subset in $\mathcal{P}$.
-            \item the union of all subsets in $\mathcal{P}$ equals $X$, i.e., $\bigcup_{A \in \mathcal{P}} A = X$.
-            \item any two distinct subsets in $\mathcal{P}$ are disjoint, i.e., $\forall \, A, B \in \mathcal{P}$, if $A \neq B$, then $A \cap B = \emptyset$.
-        \end{itemize}
-    \end{tcolorbox}
-
-\end{frame}
-
-% ---------------------------------------------------------
-\begin{frame}
-
-    \begin{definition}
-
-        \bigskip
-
-        the \textbf{lattice of partitions} of set $X$, denoted $\mathcal{L} (\Pi(X), \leq)$, is the set of all partitions of $X$ together with the relation $\leq$ such that for any two partitions $\mathcal{P}$ and $\mathcal{Q}$ of $X$, we say $\mathcal{P} \leq \mathcal{Q}$ if and only if for every $A \in \mathcal{P}$, there exists $B \in \mathcal{Q}$ such that $A \subseteq B$. This relation $\leq$ is called the \textbf{refinement ordering} on partitions.
-
-        The set $\Pi(X)$ together with the refinement ordering $\leq$ forms a lattice that satisfies the following properties:
-
-        \begin{enumerate}
-            \item $\leq$ is a partial ordering on $\Pi(X)$.
-            \item For any two partitions $\mathcal{P}$ and $\mathcal{Q}$ of $X$, their least upper bound (join) $\mathcal{P} \cup \mathcal{Q}$ is the coarsest partition that refines both $\mathcal{P}$ and $\mathcal{Q}$.
-            \item For any two partitions $\mathcal{P}$ and $\mathcal{Q}$ of $X$, their greatest lower bound (meet) $\mathcal{P} \cap \mathcal{Q}$ is the finest partition that is refined by both $\mathcal{P}$ and $\mathcal{Q}$.
-        \end{enumerate}
-    \end{definition}
-
-\end{frame}
 
 \end{document}

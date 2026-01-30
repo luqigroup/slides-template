@@ -1,2 +1,0 @@
-# beamer-template
-beamer-template
