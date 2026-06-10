@@ -86,7 +86,8 @@
 \setbeamercolor{normal text}{fg=GrayText}
 \setbeamerfont{institute}{size=\small}
 \setbeamerfont{date}{size=\small}
-\setbeamerfont{footnote}{size=\scriptsize}
+\newcommand{\tinyscript}{\fontsize{7.5pt}{9pt}\selectfont}
+\setbeamerfont{footnote}{size=\tinyscript}
 \setbeamercolor{background canvas}{bg=}
 \setbeamercolor{page number in head/foot}{fg=GrayText}
 
@@ -114,7 +115,7 @@
 \makeatletter
 \def\@makefnmark{}
 \DeclareMathSizes{\f@size}{11.5}{7}{7}
-\makeatletter
+\makeatother
 
 % Document settings
 \setbeamersize{text margin left=7.5mm,text margin right=7.5mm}
