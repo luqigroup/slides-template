@@ -29,7 +29,9 @@
     \fi
 }
 \let\Oldincludegraphics\includegraphics
-\gdef\includegraphics{
+% the % ending the next line matters: without it every \includegraphics starts
+% with a space, which widens a TikZ node and shifts anything overlaid on an image
+\gdef\includegraphics{%
 \@ifnextchar[{\Oldincludegraphics}{\Oldincludegraphics[width=\ScaleIfNeeded]}}
 \makeatother
 
