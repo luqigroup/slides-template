@@ -196,6 +196,13 @@
 
 \newcommand{\citeyearauthor}[1]{\smallerthansmall\color{GrayText}\citeauthor*{#1},\,\citeyear{#1}}
 
+% one gray reading, bottom-anchored. Requires the frame to be [t]. filll, not \vfill: a [t] frame's own
+% trailing glue is fil-order, so \vfill would split the slack with it and float the reading.
+% \readinggap keeps the line clear of the bottom edge and the footnotes (it was 0.7em, which set the gray
+% line almost on the footnote rule).
+\newcommand{\readinggap}{2.2em}
+\newcommand{\reading}[1]{\vskip 0pt plus 1filll\centerline{\large \color{Gray} #1}\vspace{\readinggap}}
+
 
 % =============================================================================
 % TITLE PAGE CONFIGURATION
@@ -470,6 +477,24 @@
         \item $f_{\Bs{\theta}}$ is the model with parameters $\Bs{\theta}$
         \item $\mathcal{L}$ is the loss function
     \end{itemize}
+
+\end{frame}
+
+
+% =============================================================================
+% EQUATION SLIDE WITH ONE GRAY READING ([t] frame; \reading sits \readinggap above the bottom)
+% =============================================================================
+\begin{frame}[t]
+
+    \frametitle{an equation and its reading}
+
+    \vspace{-1.2em}
+    {\large
+    \begin{align*}
+        \min_{\Bs{\theta}}\; \frac{1}{N}\sum_{i=1}^{N}\mathcal{L}\big(f_{\Bs{\theta}}(\B{x}_i),\B{y}_i\big)
+    \end{align*}
+    }
+    \reading{$f_{\Bs{\theta}}$ the model, $\mathcal{L}$ the loss}
 
 \end{frame}
 
